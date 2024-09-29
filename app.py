@@ -1,9 +1,15 @@
+   
 import streamlit as st
 import os
 import sqlite3
 import google.generativeai as genai
 from dotenv import load_dotenv
+from PIL import Image
 import pandas as pd
+import re
+import base64
+from io import BytesIO
+import requests
 
 load_dotenv()
 # Get the API key from environment variables
@@ -68,10 +74,39 @@ Also, ensure the SQL code does not include ``` in the beginning or end and the w
 
     """
 ]
-st.set_page_config(page_title="I can Retrieve Any SQL query")
-st.header("MEDI-FRIEND")
+# Function to convert image to base64
+def image_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    return img_str
 
-question=st.text_input("Input: ",key="input")
+# Streamlit app starts here
+st.set_page_config(layout="centered")
+
+# Load the logo image from a URL
+logo_url = "logo-transparent-png.png"
+logo = Image.open(logo_url)
+
+# Convert image to base64 for embedding in HTML
+logo_base64 = image_to_base64(logo)
+
+# Set the title with logo on the left and tagline in smaller font
+st.markdown(
+    f"""
+    <div style="display: flex; align-items: center;">
+        <img src="data:image/png;base64,{logo_base64}" style="width: 100px; margin-right: 20px;margin-left: 140px;" alt="Logo">
+        <div>
+            <h1 style="margin: 0; display: inline;">MediFriend</h1>
+            <h5 style="margin: 0; margin-left: 180px;">...a friend indeed</h5>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+question=st.text_input("", key="")
 
 submit=st.button("Submit")
 
